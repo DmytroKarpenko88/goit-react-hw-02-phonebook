@@ -1,58 +1,53 @@
 import React, { Component } from 'react';
 import { Container } from './App.styled';
-import FeedbackOptions from './FeedbackOptions';
-import Statistics from './Statistics';
-import Section from './Section';
-import Notification from './Notification';
+// import FeedbackOptions from './FeedbackOptions';
+// import Statistics from './Statistics';
+// import Section from './Section';
+// import Notification from './Notification';
 // import PropTypes from 'prop-types';
 
 class App extends Component {
   state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
-
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
-    return good + neutral + bad;
-  };
-
-  countPositiveFeedbackPercentage = () => {
-    return Math.round((this.state.good / this.countTotalFeedback()) * 100);
-  };
-
-  onLeaveFeedback = feedbackType => {
-    this.setState(prev => ({ [feedbackType]: prev[feedbackType] + 1 }));
+    contacts: [],
+    name: '',
   };
 
   render() {
-    const { good, neutral, bad } = this.state;
-    const total = this.countTotalFeedback();
     return (
       <>
         <Container>
-          <Section title={'Please leave feedback'}>
-            <FeedbackOptions
-              options={this.state}
-              onLeaveFeedback={this.onLeaveFeedback}
-            />
-          </Section>
-        </Container>
-        <Container>
-          <Section title="Statistics">
-            {!total ? (
-              <Notification message={'There is no feedback'} />
-            ) : (
-              <Statistics
-                good={good}
-                neutral={neutral}
-                bad={bad}
-                total={this.countTotalFeedback()}
-                positivePercentage={this.countPositiveFeedbackPercentage()}
+          <h2>Phonebook</h2>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: ' 15px',
+            }}
+          >
+            <label>
+              <p>Name</p>
+
+              <input
+                type="text"
+                name="name"
+                pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+                title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+                required
               />
-            )}
-          </Section>
+            </label>
+            <button type="submit">Add contact</button>
+          </div>
+        </Container>
+
+        <Container>
+          <div>
+            <h2>Contacts</h2>
+            <ul>
+              <li>Bob</li>
+              <li>Marvin</li>
+              <li>Bart</li>
+            </ul>
+          </div>
         </Container>
       </>
     );
