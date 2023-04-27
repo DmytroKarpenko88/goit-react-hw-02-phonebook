@@ -1,15 +1,32 @@
 import React, { Component } from 'react';
 import { Container } from './App.styled';
+import { nanoid } from 'nanoid';
 // import FeedbackOptions from './FeedbackOptions';
 // import Statistics from './Statistics';
 // import Section from './Section';
 // import Notification from './Notification';
 // import PropTypes from 'prop-types';
 
+import Form from './Form/Form';
+
 class App extends Component {
   state = {
     contacts: [],
     name: '',
+  };
+
+  addListName = name => {
+    console.log(name);
+    const item = {
+      id: nanoid(5),
+      name,
+    };
+
+    this.setState(prevState => ({
+      contacts: [item, ...prevState.contacts],
+    }));
+
+    console.log(this.state.contacts);
   };
 
   render() {
@@ -24,18 +41,7 @@ class App extends Component {
               gap: ' 15px',
             }}
           >
-            <label>
-              <p>Name</p>
-
-              <input
-                type="text"
-                name="name"
-                pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-                required
-              />
-            </label>
-            <button type="submit">Add contact</button>
+            <Form onSubmit={this.addListName} />
           </div>
         </Container>
 
