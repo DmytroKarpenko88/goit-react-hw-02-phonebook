@@ -7,19 +7,27 @@ import { nanoid } from 'nanoid';
 // import Notification from './Notification';
 // import PropTypes from 'prop-types';
 
-import Form from './Form/Form';
+import ContactForm from './ContactForm/ContactForm';
+import Filter from './Filter/Filter';
+// import ContactList from './ContactList/ContactList';
 
 class App extends Component {
   state = {
-    contacts: [],
-    name: '',
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
   };
 
-  addListName = name => {
+  addListName = ({ name, number }) => {
     console.log(name);
     const item = {
       id: nanoid(5),
       name,
+      number,
     };
 
     this.setState(prevState => ({
@@ -28,32 +36,56 @@ class App extends Component {
 
     console.log(this.state.contacts);
   };
+  onInputChange = e => {
+    const { name, value } = e.currentTarget;
+    this.setState({
+      [name]: value,
+    });
+  };
+
+  getVisibleItems = () => {
+    return this.state.contacts.filter(el =>
+      el.name
+        .toLocaleLowerCase()
+        .includes(this.state.filter.toLocaleLowerCase())
+    );
+  };
 
   render() {
     return (
       <>
         <Container>
           <h2>Phonebook</h2>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: ' 15px',
-            }}
-          >
-            <Form onSubmit={this.addListName} />
-          </div>
+
+          <ContactForm onSubmit={this.addListName} />
         </Container>
 
         <Container>
-          <div>
-            <h2>Contacts</h2>
-            <ul>
-              <li>Bob</li>
-              <li>Marvin</li>
-              <li>Bart</li>
-            </ul>
-          </div>
+          <h2>Contacts</h2>
+
+          <Filter onChange={this.onInputChange} value={this.state.filter} />
+
+          <ul
+            style={{
+              listStyle: 'disc',
+              paddingLeft: '15px',
+            }}
+          >
+            {this.getVisibleItems().map(({ id, name, number }) => {
+              return (
+                <li
+                  key={id}
+                  style={{
+                    margin: '10px',
+                  }}
+                >
+                  <span>{name}</span> <span>{number}</span>
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* <ContactList /> */}
         </Container>
       </>
     );
