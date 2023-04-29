@@ -9,7 +9,7 @@ import { nanoid } from 'nanoid';
 
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
-// import ContactList from './ContactList/ContactList';
+import ContactList from './ContactList/ContactList';
 
 class App extends Component {
   state = {
@@ -22,20 +22,25 @@ class App extends Component {
     filter: '',
   };
 
-  addListName = ({ name, number }) => {
-    console.log(name);
-    const item = {
+  addUser = ({ name, number }) => {
+    const user = {
       id: nanoid(5),
       name,
       number,
     };
 
-    this.setState(prevState => ({
-      contacts: [item, ...prevState.contacts],
-    }));
+    const existing = this.state.contacts.find(({ name }) => name === user.name);
 
-    console.log(this.state.contacts);
+    if (existing) {
+      alert(`${user.name} is already in contacts`);
+      return;
+    }
+
+    this.setState(prevState => ({
+      contacts: [user, ...prevState.contacts],
+    }));
   };
+
   onInputChange = e => {
     const { name, value } = e.currentTarget;
     this.setState({
@@ -51,41 +56,29 @@ class App extends Component {
     );
   };
 
+  handleDelete = idUser => {
+    this.setState(({ contacts }) => ({
+      contacts: contacts.filter(({ id }) => idUser !== id),
+    }));
+  };
+
   render() {
     return (
       <>
         <Container>
           <h2>Phonebook</h2>
 
-          <ContactForm onSubmit={this.addListName} />
+          <ContactForm onSubmit={this.addUser} />
         </Container>
 
         <Container>
           <h2>Contacts</h2>
 
           <Filter onChange={this.onInputChange} value={this.state.filter} />
-
-          <ul
-            style={{
-              listStyle: 'disc',
-              paddingLeft: '15px',
-            }}
-          >
-            {this.getVisibleItems().map(({ id, name, number }) => {
-              return (
-                <li
-                  key={id}
-                  style={{
-                    margin: '10px',
-                  }}
-                >
-                  <span>{name}</span> <span>{number}</span>
-                </li>
-              );
-            })}
-          </ul>
-
-          {/* <ContactList /> */}
+          <ContactList
+            visibleList={this.getVisibleItems()}
+            onDeleteUser={this.handleDelete}
+          />
         </Container>
       </>
     );
